@@ -6,7 +6,6 @@ import torch.nn.functional as F
 
 
 class ConvBNReLU(nn.Module):
-    """Convolution + BatchNorm + ReLU block"""
     def __init__(self, in_channels, out_channels,
                  kernel_size, stride=1, padding=0):
         super().__init__()
@@ -29,15 +28,6 @@ class ConvBNReLU(nn.Module):
 
 
 class InceptionBlock(nn.Module):
-    """
-    Inception v1 block (GoogLeNet)
-
-    구조:
-    - branch1: 1x1 conv
-    - branch2: 1x1 conv -> 3x3 conv
-    - branch3: 1x1 conv -> 5x5 conv
-    - branch4: 3x3 maxpool -> 1x1 conv
-    """
     def __init__(self,
                  in_channels,
                  c1x1,
@@ -81,12 +71,6 @@ class InceptionBlock(nn.Module):
 
 
 class AuxClassifier(nn.Module):
-    """
-    Auxiliary classifier used during training.
-
-    입력: Inception 4a 또는 4d의 feature map
-    출력: 클래스별 logits
-    """
     def __init__(self, in_channels, num_classes):
         super().__init__()
         # paper 기준: 5x5 avg pool, stride 3
@@ -110,11 +94,6 @@ class AuxClassifier(nn.Module):
 
 
 class GoogLeNet(nn.Module):
-    """
-    GoogLeNet (Inception v1) implementation.
-
-    기본 입력 크기: 3 x 224 x 224
-    """
     def __init__(self, num_classes=1000, use_aux=True):
         super().__init__()
         self.use_aux = use_aux
@@ -258,24 +237,16 @@ class GoogLeNet(nn.Module):
         x = self.inception5b(x)
 
         # ----- classifier -----
-        x = self.global_avg_pool(x)      # (N, 1024, 1, 1)
-        x = torch.flatten(x, 1)          # (N, 1024)
+        x = self.global_avg_pool(x)      
+        x = torch.flatten(x, 1)          
         x = self.dropout(x)
-        x = self.fc(x)                   # (N, num_classes)
+        x = self.fc(x)                   
 
         if self.use_aux and self.training:
-            # 학습 모드일 때: main + aux1 + aux2 모두 반환
             return x, aux1, aux2
         else:
-            # 평가 모드일 때: main logits만 반환
             return x
 
 
 def googlenet(num_classes=1000, use_aux=True):
-    """
-    Helper function to create GoogLeNet instance.
-
-    사용 예:
-        model = googlenet(num_classes=10, use_aux=True)
-    """
     return GoogLeNet(num_classes=num_classes, use_aux=use_aux)
