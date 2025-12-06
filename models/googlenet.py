@@ -73,12 +73,9 @@ class InceptionBlock(nn.Module):
 class AuxClassifier(nn.Module):
     def __init__(self, in_channels, num_classes):
         super().__init__()
-        # paper 기준: 5x5 avg pool, stride 3
         self.avgpool = nn.AvgPool2d(kernel_size=5, stride=3)
         self.conv = ConvBNReLU(in_channels, 128, kernel_size=1)
 
-        # 입력 이미지 224x224 기준일 때, 4a/4d에서 feature map 크기 ≈ 14x14
-        # -> AvgPool(5,3) 거치면 4x4 정도 => 128 * 4 * 4
         self.fc1 = nn.Linear(128 * 4 * 4, 1024)
         self.dropout = nn.Dropout(0.7)
         self.fc2 = nn.Linear(1024, num_classes)
@@ -185,9 +182,7 @@ class GoogLeNet(nn.Module):
 
         # ---------- Auxiliary classifiers ----------
         if self.use_aux:
-            # Inception 4a 출력 채널 수: 512
             self.aux1 = AuxClassifier(in_channels=512, num_classes=num_classes)
-            # Inception 4d 출력 채널 수: 528
             self.aux2 = AuxClassifier(in_channels=528, num_classes=num_classes)
         else:
             self.aux1 = None
