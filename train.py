@@ -14,7 +14,7 @@ def main():
     print(f"[INFO] Using device: {device}")
 
    
-    DATASET_ROOT = "POC_Dataset"
+    DATASET_ROOT = "/Users/imdahee/Desktop/4-1/컴퓨터비전입문/googleNet/POC_Dataset"
 
     train_dir = os.path.join(DATASET_ROOT, "Training")
     test_dir = os.path.join(DATASET_ROOT, "Testing")
