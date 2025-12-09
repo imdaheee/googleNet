@@ -69,11 +69,3 @@ googleNet/
 ├─ train.py
 └─ best_googlenet.pth
 ```
-
----
-
-다음으로 추가 예정:
-
-* Confusion matrix
-* Training/validation accuracy & loss curves
-* Inference examples (visualization)
